@@ -22,3 +22,11 @@ resource "azurerm_resource_group" "module-test" {
   name     = "module-${terraform.workspace}"
   location = "UK South"
 }
+
+
+module "queues" {
+  source = "./test-module"
+  resource_group_name = azurerm_resource_group.module-test.name
+  storage_account_name = "queues"
+  queue_names = ["one", "two"]
+}
