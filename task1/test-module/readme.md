@@ -1,0 +1,1 @@
+module that creates a storage account and a set of queues
