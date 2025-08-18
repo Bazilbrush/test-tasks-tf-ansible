@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "this" {
-  name                     = "${var.storage_account_name}-${terraform.workspace}"
+  name                     = "${var.storage_account_name}${terraform.workspace}"
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard" # can be variablised but i dont think i have access beyond standard tier
