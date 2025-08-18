@@ -3,7 +3,18 @@ output "storage_account_id" {
   value       = azurerm_storage_account.this.id
 }
 
+output "queue_ids" {
+  description = "List of created queue urls"
+  value       = [for queue in azurerm_storage_queue.queues : queue.id]
+}
+
+
 output "queue_urls" {
-  description = "List of created queue urls."
-  value       = [for queue in azurerm_storage_queue.queues : queue.name]
+  description = "List of created queue urls"
+  value       = [for queue in azurerm_storage_queue.queues : "https://${azurerm_storage_account.this.name}.queue.core.windows.net/${queue.name}"]
+}
+
+output "deadletter_queue_urls" {
+  description = "List of created dlqueue urls"
+  value       = [for queue in azurerm_storage_queue.queues_deadletter : "https://${azurerm_storage_account.this.name}.queue.core.windows.net/${queue.name}"]
 }

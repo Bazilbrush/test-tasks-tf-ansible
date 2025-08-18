@@ -30,3 +30,16 @@ module "queues" {
   storage_account_name = "queues"
   queue_names = ["one", "two"]
 }
+
+output "storage_account_id" {
+  value = module.queues.storage_account_id
+}
+output "queue_ids" {
+  value = module.queues.queue_ids
+}
+output "queue_urls" {
+  value = module.queues.queue_urls
+}
+output "deadletter_queue_urls" {
+  value = module.queues.deadletter_queue_urls
+}

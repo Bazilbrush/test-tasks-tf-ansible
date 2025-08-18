@@ -17,7 +17,7 @@ resource "azurerm_storage_queue" "queues" {
   storage_account_name = azurerm_storage_account.this.name
 }
 
-resource "azurerm_storage_queue" "queues-deadletter" {
+resource "azurerm_storage_queue" "queues_deadletter" {
   for_each             = toset(var.queue_names)
   name                 = "${each.value}-${terraform.workspace}-poison"
   storage_account_name = azurerm_storage_account.this.name
