@@ -1,0 +1,106 @@
+---
+- name: Deploy queues app to Kubernetes
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Ensure namespace exists
+      kubernetes.core.k8s:
+        api_version: v1
+        kind: Namespace
+        name: "{{ namespace }}"
+        state: present
+
+- name: deploy to dev namespace
+  hosts: dev
+  gather_facts: no
+  vars:
+    helm_chart_path: ../queues   
+    release_name: queues
+  tasks:
+    - name: Deploy Helm chart
+      community.kubernetes.helm:
+        name: "{{ release_name }}-{{ namespace }}"
+        chart_ref: "{{ helm_chart_path }}"
+        release_namespace: "{{ namespace }}"
+        create_namespace: true
+        wait: yes   # add to wait for pods to become stable
+        wait_timeout: 1m0s   # for the purposes of testing make it short
+        atomic: yes # If set, the installation process deletes the installation on failure. 
+        values:
+          image:
+            repository: localhost:5000/queues
+            tag: "{{ image_tag }}"
+          service:
+            port: 3000
+
+    - name: Remove the release to clean up
+      community.kubernetes.helm:
+        name: "{{ release_name }}-{{ namespace }}"
+        release_namespace: "{{ namespace }}"
+        state: absent
+        wait: true
+
+- name: deploy to uat and prod namespace
+  hosts: 
+    - uat
+    - prod
+  gather_facts: no
+  vars:
+    helm_chart_path: ../queues   
+    release_name: queues
+  tasks:
+    - name: Deploy Helm chart
+      community.kubernetes.helm:
+        name: "{{ release_name }}-{{ namespace }}"
+        chart_ref: "{{ helm_chart_path }}"
+        release_namespace: "{{ namespace }}"
+        create_namespace: true
+        wait: yes   # add to wait for pods to become stable
+        wait_timeout: 1m0s   # for the purposes of testing make it short
+        atomic: yes # If set, the installation process deletes the installation on failure. 
+        values:
+          image:
+            repository: localhost:5000/queues
+            tag: "{{ image_tag }}"
+          service:
+            port: 3000
+
+    - name: Remove the release to clean up
+      community.kubernetes.helm:
+        name: "{{ release_name }}-{{ namespace }}"
+        release_namespace: "{{ namespace }}"
+        state: absent
+        wait: true
+
+
+- name: deploy to uat with errors
+  hosts: 
+    - uat
+  gather_facts: no
+  vars:
+    helm_chart_path: ../queues   
+    release_name: queues
+  tasks:
+    - name: Deploy Helm chart
+      community.kubernetes.helm:
+        name: "{{ release_name }}-{{ namespace }}"
+        chart_ref: "{{ helm_chart_path }}"
+        release_namespace: "{{ namespace }}"
+        create_namespace: true
+        wait: yes   # add to wait for pods to become stable
+        wait_timeout: 1m0s   # for the purposes of testing make it short
+        atomic: yes # If set, the installation process deletes the installation on failure. 
+        values:
+          image:
+            repository: localhost:5000/queuess   #wrong image name to simulate error
+            tag: "{{ image_tag }}"
+          service:
+            port: 3000
+
+    - name: Remove the release to clean up
+      community.kubernetes.helm:
+        name: "{{ release_name }}-{{ namespace }}"
+        release_namespace: "{{ namespace }}"
+        state: absent
+        wait: true
+
