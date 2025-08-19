@@ -1,0 +1,21 @@
+all:
+  children:
+    dev:
+      hosts:
+        devhost:
+          ansible_connection: local
+          namespace: dev
+          image_tag: latest
+    uat:
+      hosts:
+        uathost:
+          ansible_connection: local
+          namespace: uat
+          image_tag: latest
+    prod:
+      hosts:
+        prodhost:
+          ansible_connection: local
+          namespace: prod
+          image_tag: latest
+

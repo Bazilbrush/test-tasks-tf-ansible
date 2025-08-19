@@ -28,7 +28,7 @@ module "queues" {
   source = "./test-module"
   resource_group_name = azurerm_resource_group.module-test.name
   storage_account_name = "queues"
-  queue_names = ["one", "two"]
+  queue_names = ["one"]
 }
 
 output "storage_account_id" {
